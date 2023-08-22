@@ -59,6 +59,7 @@ const initializeNewGame = () => {}
 const startRound = () => {
   initializeNewRound()
   collectCards()
+  flipCards(true)
 }
 
 const initializeNewRound = () => {}
@@ -77,6 +78,24 @@ const addCardsToGridAreaCell = (cellPositionClassName) => {
 
   cards.forEach((card, index) => {
     addChildElement(cellPositionElem, card)
+  })
+}
+
+const flipCard = (card, flipToBack) => {
+  const innerCardElem = card.firstChild
+
+  if (flipToBack && !innerCardElem.classList.contains('flip-it')) {
+    innerCardElem.classList.add('flip-it')
+  } else if (innerCardElem.classList.contains('flip-it')) {
+    innerCardElem.classList.remove('flip-it')
+  }
+}
+
+const flipCards = (flipToBack) => {
+  cards.forEach((card, index) => {
+    setTimeout(() => {
+      flipCard(card, flipToBack)
+    }, index * 100)
   })
 }
 
@@ -158,24 +177,22 @@ const addChildElement = (parentElem, childElem) => {
 }
 
 const addCardToGridCell = (card) => {
-    const cardPositionClassName = mapCardIdToGridCell(card.id)
-    const cardPosElem = document.querySelector(cardPositionClassName)
-  
-    addChildElement(cardPosElem, card)
-  }
-  
+  const cardPositionClassName = mapCardIdToGridCell(card.id)
+  const cardPosElem = document.querySelector(cardPositionClassName)
 
-  const mapCardIdToGridCell = (cardId) => {
-    if (cardId == 1) {
-      return '.card-pos-a'
-    } else if (cardId == 2) {
-      return '.card-pos-b'
-    } else if (cardId == 3) {
-      return '.card-pos-c'
-    } else if (cardId == 4) {
-      return '.card-pos-d'
-    }
+  addChildElement(cardPosElem, card)
+}
+
+const mapCardIdToGridCell = (cardId) => {
+  if (cardId == 1) {
+    return '.card-pos-a'
+  } else if (cardId == 2) {
+    return '.card-pos-b'
+  } else if (cardId == 3) {
+    return '.card-pos-c'
+  } else if (cardId == 4) {
+    return '.card-pos-d'
   }
-  
+}
 
 loadGame()
