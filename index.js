@@ -19,7 +19,11 @@ const cardObjectDefinitions = [
 
 const cardBackImgPath = '/images/card-back-Blue.png'
 
-const cardContainerElem = document.querySelector('.card-container')
+// const cardContainerElem = document.querySelector('.card-container')
+
+let cards = []
+
+const playGameButtonElem = document.getElementById('playGame')
 
 {
   /* <div class="card">
@@ -33,6 +37,27 @@ const cardContainerElem = document.querySelector('.card-container')
           </div>
         </div> */
 }
+
+const loadGame = () => {
+  createCards()
+
+  cards = document.querySelectorAll('.card')
+
+  playGameButtonElem.addEventListener('click', () => startGame())
+}
+
+const startGame = () => {
+  initializeNewGame()
+  startRound()
+}
+
+const initializeNewGame = () => {}
+
+const startRound = () => {
+  initializeNewRound()
+}
+
+const initializeNewRound = () => {}
 
 const createCards = () => {
   cardObjectDefinitions.forEach((cardItem) => {
@@ -131,4 +156,4 @@ const mapCardIdToGridCell = (card) => {
   }
 }
 
-createCards()
+loadGame()
