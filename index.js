@@ -19,11 +19,14 @@ const cardObjectDefinitions = [
 
 const cardBackImgPath = '/images/card-back-Blue.png'
 
-// const cardContainerElem = document.querySelector('.card-container')
+const cardContainerElem = document.querySelector('.card-container')
 
 let cards = []
 
 const playGameButtonElem = document.getElementById('playGame')
+
+const collapsedGridAreaTemplate = '"a a" "a a"'
+const cardCollectionCellClass = '.card-pos-a'
 
 {
   /* <div class="card">
@@ -55,9 +58,27 @@ const initializeNewGame = () => {}
 
 const startRound = () => {
   initializeNewRound()
+  collectCards()
 }
 
 const initializeNewRound = () => {}
+
+const collectCards = () => {
+  transformGridArea(collapsedGridAreaTemplate)
+  addCardsToGridAreaCell(cardCollectionCellClass)
+}
+
+const transformGridArea = (areas) => {
+  cardContainerElem.style.gridTemplateAreas = areas
+}
+
+const addCardsToGridAreaCell = (cellPositionClassName) => {
+  const cellPositionElem = document.querySelector(cellPositionClassName)
+
+  cards.forEach((card, index) => {
+    addChildElement(cellPositionElem, card)
+  })
+}
 
 const createCards = () => {
   cardObjectDefinitions.forEach((cardItem) => {
@@ -120,40 +141,41 @@ const createCard = (cardItem) => {
   addCardToGridCell(cardElem)
 }
 
-function createElement(elemType) {
+const createElement = (elemType) => {
   return document.createElement(elemType)
 }
-function addClassToElement(elem, className) {
+const addClassToElement = (elem, className) => {
   elem.classList.add(className)
 }
-function addIdToElement(elem, id) {
+const addIdToElement = (elem, id) => {
   elem.id = id
 }
-function addSrcToImageElem(imgElem, src) {
+const addSrcToImageElem = (imgElem, src) => {
   imgElem.src = src
 }
-function addChildElement(parentElem, childElem) {
+const addChildElement = (parentElem, childElem) => {
   parentElem.appendChild(childElem)
 }
 
-function addCardToGridCell(card) {
-  const cardPositionClassName = mapCardIdToGridCell(card)
-
-  const cardPosElem = document.querySelector(cardPositionClassName)
-
-  addChildElement(cardPosElem, card)
-}
-
-const mapCardIdToGridCell = (card) => {
-  if (card.id == 1) {
-    return '.card-pos-a'
-  } else if (card.id == 2) {
-    return '.card-pos-b'
-  } else if (card.id == 3) {
-    return '.card-pos-c'
-  } else if (card.id == 4) {
-    return '.card-pos-d'
+const addCardToGridCell = (card) => {
+    const cardPositionClassName = mapCardIdToGridCell(card.id)
+    const cardPosElem = document.querySelector(cardPositionClassName)
+  
+    addChildElement(cardPosElem, card)
   }
-}
+  
+
+  const mapCardIdToGridCell = (cardId) => {
+    if (cardId == 1) {
+      return '.card-pos-a'
+    } else if (cardId == 2) {
+      return '.card-pos-b'
+    } else if (cardId == 3) {
+      return '.card-pos-c'
+    } else if (cardId == 4) {
+      return '.card-pos-d'
+    }
+  }
+  
 
 loadGame()
