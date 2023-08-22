@@ -34,7 +34,13 @@ const cardContainerElem = document.querySelector('.card-container')
         </div> */
 }
 
-const createCard = (createItem) => {
+const createCards = () => {
+  cardObjectDefinitions.forEach((cardItem) => {
+    createCard(cardItem)
+  })
+}
+
+const createCard = (cardItem) => {
   // crate div element that make up a card
   const cardElem = document.createElement('div')
   const cardInnerElem = createElement('div')
@@ -47,7 +53,7 @@ const createCard = (createItem) => {
 
   // add class and id to card element
   addClassToElement(cardElem, 'card')
-  addIdToElement(cardElem, createItem.id)
+  addIdToElement(cardElem, cardItem.id)
 
   // add class to inner card element
   addClassToElement(cardInnerElem, 'card-inner')
@@ -62,13 +68,13 @@ const createCard = (createItem) => {
   addSrcToImageElem(cardBackImg, cardBackImgPath)
 
   // add src attribute and appropriate value to img element - front of card
-  addSrcToImageElem(cardFrontImg, createItem.imagePath)
+  addSrcToImageElem(cardFrontImg, cardItem.imagePath)
 
   // assign class to back image element of back of card
-  addClassToElement(cardBackElem, 'card-img')
+  addClassToElement(cardBackImg, 'card-img')
 
   // assign class to front image element of front of card
-  addClassToElement(cardFrontElem, 'card-img')
+  addClassToElement(cardFrontImg, 'card-img')
 
   // add front image element as child element to front card element
   addChildElement(cardFrontElem, cardFrontImg)
@@ -77,7 +83,7 @@ const createCard = (createItem) => {
   addChildElement(cardBackElem, cardBackImg)
 
   // add front card element as child element to inner card element
-  addChildElement(cardInnerElem.cardFrontElem)
+  addChildElement(cardInnerElem, cardFrontElem)
 
   // add back card element as child element to inner card element
   addChildElement(cardInnerElem, cardBackElem)
@@ -85,25 +91,44 @@ const createCard = (createItem) => {
   // add inner card element as child element to card element
   addChildElement(cardElem, cardInnerElem)
 
-  // 
+  // add card element as child element to appropriate grid cell
+  addCardToGridCell(cardElem)
 }
 
-const createElement = (elemType) => {
+function createElement(elemType) {
   return document.createElement(elemType)
 }
-
-const addClassToElement = (elem, className) => {
+function addClassToElement(elem, className) {
   elem.classList.add(className)
 }
-
-const addIdToElement = (elem, id) => {
+function addIdToElement(elem, id) {
   elem.id = id
 }
-
-const addSrcToImageElem = (imgElem, src) => {
+function addSrcToImageElem(imgElem, src) {
   imgElem.src = src
 }
-
-const addChildElement = (parentElem, childElem) => {
+function addChildElement(parentElem, childElem) {
   parentElem.appendChild(childElem)
 }
+
+function addCardToGridCell(card) {
+  const cardPositionClassName = mapCardIdToGridCell(card)
+
+  const cardPosElem = document.querySelector(cardPositionClassName)
+
+  addChildElement(cardPosElem, card)
+}
+
+const mapCardIdToGridCell = (card) => {
+  if (card.id == 1) {
+    return '.card-pos-a'
+  } else if (card.id == 2) {
+    return '.card-pos-b'
+  } else if (card.id == 3) {
+    return '.card-pos-c'
+  } else if (card.id == 4) {
+    return '.card-pos-d'
+  }
+}
+
+createCards()
