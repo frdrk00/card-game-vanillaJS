@@ -19,14 +19,18 @@ const cardObjectDefinitions = [
 
 const cardBackImgPath = '/images/card-back-Blue.png'
 
-const cardContainerElem = document.querySelector('.card-container')
-
 let cards = []
 
 const playGameButtonElem = document.getElementById('playGame')
 
+const cardContainerElem = document.querySelector('.card-container')
+
 const collapsedGridAreaTemplate = '"a a" "a a"'
 const cardCollectionCellClass = '.card-pos-a'
+
+const numCards = cardObjectDefinitions.length
+
+let cardPositions = []
 
 {
   /* <div class="card">
@@ -99,6 +103,31 @@ const flipCards = (flipToBack) => {
   })
 }
 
+const shuffleCards = () => {
+  const id = setInterval(shuffle, 12)
+  let shuffleCount = 0
+
+  const shuffle = () => {
+    randomizeCardPosition()
+
+    if (shuffleCount == 500) {
+      clearInterval(id)
+    } else {
+      shuffleInterval++
+    }
+  }
+}
+
+const randomizeCardPosition = () => {
+  const random1 = Math.floor(Math.random() * numCards) + 1
+  const random2 = Math.floor(Math.random() * numCards) + 1
+
+  const temp = cardPositions[random1 - 1]
+
+  cardPositions[random1 - 1] = cardPositions[random2 - 1]
+  cardPositions[random2 - 1] = temp
+}
+
 const createCards = () => {
   cardObjectDefinitions.forEach((cardItem) => {
     createCard(cardItem)
@@ -158,6 +187,13 @@ const createCard = (cardItem) => {
 
   // add card element as child element to appropriate grid cell
   addCardToGridCell(cardElem)
+
+  initializeCardPositions(cardElem)
+
+}
+
+const initializeCardPositions = (card) => {
+  cardPositions.push(card.id)
 }
 
 const createElement = (elemType) => {
