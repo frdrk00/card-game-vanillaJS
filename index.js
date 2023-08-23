@@ -52,6 +52,10 @@ let roundNum = 0
 let maxRounds = 4
 let score = 0
 
+let gameObj = {}
+
+const localStorageGameKey = 'HTA'
+
 /* <div class="card">
           <div class="card-inner">
             <div class="card-front">
@@ -93,6 +97,7 @@ const endRound = () => {
 const chooseCard = (card) => {
   if (canChooseCard()) {
     evaluateCardChoice(card)
+    saveGameObjectToLocalStorage(score, roundNum)
     flipCard(card, false)
 
     setTimeout(() => {
@@ -190,6 +195,23 @@ const loadGame = () => {
   updateStatusElement(roundContainerElem, 'none')
 }
 
+const checkForInCompleteGame = () => {
+  const serializedGameObj = getLocalStorageItemVal(localStorageGameKey)
+
+  if (serializedGameObj) {
+    gameObj = getObjectFromJSON(serializedGameObj)
+
+    if (gameObj.round >= maxRounds) {
+      removeLocalStorageItem(localStorageGameKey)
+    } else {
+      if (confirm('Would you like to continue with your last game?')) {
+        score = gameObj.score
+        roundNum = gameObj.round
+      }
+    }
+  }
+}
+
 const startGame = () => {
   initializeNewGame()
   startRound()
@@ -198,6 +220,8 @@ const startGame = () => {
 const initializeNewGame = () => {
   score = 0
   roundNum = 0
+
+  checkForInCompleteGame()
 
   shufflingInProgress = false
 
@@ -512,6 +536,41 @@ const mapCardIdToGridCell = (cardId) => {
   } else if (cardId == 4) {
     return '.card-pos-d'
   }
+}
+
+// local storage functions
+
+const getSerializedObjectAsJSON = (obj) => {
+  return JSON.stringify(obj)
+}
+
+const getObjectFromJSON = (json) => {
+  return JSON.parse(json)
+}
+
+const updateLocalStorageItem = (key, value) => {
+  localStorage.setItem(key, value)
+}
+
+const removeLocalStorageItem = (key) => {
+  localStorage.removeItem(key)
+}
+
+const getLocalStorageItemVal = (key) => {
+  return localStorage.getItem(key)
+}
+
+const updateGameObject = (score, round) => {
+  gameObj.score = score
+  gameObj.round = round
+}
+
+const saveGameObjectToLocalStorage = (score, round) => {
+  updateGameObject(score, round)
+  updateLocalStorageItem(
+    localStorageGameKey,
+    getSerializedObjectAsJSON(gameObj)
+  )
 }
 
 loadGame()
