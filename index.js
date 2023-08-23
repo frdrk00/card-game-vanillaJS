@@ -64,6 +64,7 @@ const startRound = () => {
   initializeNewRound()
   collectCards()
   flipCards(true)
+  shuffleCards()
 }
 
 const initializeNewRound = () => {}
@@ -103,22 +104,23 @@ const flipCards = (flipToBack) => {
   })
 }
 
-const shuffleCards = () => {
+function shuffleCards() {
   const id = setInterval(shuffle, 12)
   let shuffleCount = 0
 
-  const shuffle = () => {
-    randomizeCardPosition()
+  function shuffle() {
+    randomizeCardPositions()
 
     if (shuffleCount == 500) {
       clearInterval(id)
+      dealCards()
     } else {
-      shuffleInterval++
+      shuffleCount++
     }
   }
 }
 
-const randomizeCardPosition = () => {
+const randomizeCardPositions = () => {
   const random1 = Math.floor(Math.random() * numCards) + 1
   const random2 = Math.floor(Math.random() * numCards) + 1
 
@@ -128,11 +130,52 @@ const randomizeCardPosition = () => {
   cardPositions[random2 - 1] = temp
 }
 
+const dealCards = () => {
+  addCardsToAppropriateCell()
+  const aresTemplate = returnGridAreasMappedToCardPos()
+
+  transformGridArea(aresTemplate)
+}
+
+const returnGridAreasMappedToCardPos = () => {
+  let firstPart = ''
+  let secondPart = ''
+  let areas = ''
+
+  cards.forEach((card, index) => {
+    if (cardPositions[index] == 1) {
+      areas = areas + 'a '
+    } else if (cardPositions[index] == 2) {
+      areas = areas + 'b '
+    } else if (cardPositions[index] == 3) {
+      areas = areas + 'c '
+    } else if (cardPositions[index] == 4) {
+      areas = areas + 'd '
+    }
+
+    if (index == 1) {
+      firstPart = areas.substring(0, areas.length - 1)
+      areas = ''
+    } else if (index == 3) {
+      secondPart = areas.substring(0, areas.length - 1)
+    }
+  })
+  return `"${firstPart}" "${secondPart}"`
+}
+
+const addCardsToAppropriateCell = () => {
+  cards.forEach((card) => {
+    addCardToGridCell(card)
+  })
+}
+
 const createCards = () => {
   cardObjectDefinitions.forEach((cardItem) => {
     createCard(cardItem)
   })
 }
+
+/* FINAL FUNCTION */
 
 const createCard = (cardItem) => {
   // crate div element that make up a card
@@ -189,7 +232,6 @@ const createCard = (cardItem) => {
   addCardToGridCell(cardElem)
 
   initializeCardPositions(cardElem)
-
 }
 
 const initializeCardPositions = (card) => {
